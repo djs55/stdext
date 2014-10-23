@@ -53,17 +53,20 @@ let make () =
   let m = Mutex.create () in
   { backtraces; exn_to_backtrace; producer; m }
 
-let add t exn =
+let associate t exn bt =
   Mutex.execute t.m
     (fun () ->
-      let bt = get_backtrace_401 () in
-      (* Deliberately clear the backtrace buffer *)
-      (try raise Not_found with Not_found -> ());
       let slot = t.producer mod max_backtraces in
       t.producer <- t.producer + 1;
       Weak.set t.exn_to_backtrace slot (Some exn);
       t.backtraces.(slot) <- bt;
     )
+
+let add_backtrace t exn =
+  let bt = get_backtrace_401 () in
+  (* Deliberately clear the backtrace buffer *)
+  (try raise Not_found with Not_found -> ());
+  associate t exn bt
 
 (* fold over the slots matching exn *)
 let fold t exn f initial =
@@ -93,8 +96,14 @@ let remove_all t exn =
 
 let global_backtraces = make ()
 
-let is_important = add global_backtraces
+let is_important = add_backtrace global_backtraces
+
+let add = associate global_backtraces
 
 let remove = remove_all global_backtraces
 
 let get = find_all global_backtraces
+
+let reraise old newexn =
+  add newexn (remove old);
+  raise newexn

@@ -19,5 +19,12 @@ val is_important: exn -> unit
 val get: exn -> string list
 (** Get a copy of the backtrace associated with [exn] *)
 
+val add: exn -> string list -> unit
+(** Associate additional backtrace with [exn] *)
+
+val reraise: exn -> exn -> 'a
+(** [reraise old new] associates the backtrace of [old] with [new]
+    and throws [new] *)
+
 val remove: exn -> string list
 (** Get a backtrace associated with [exn] and remove it from the tables *)
