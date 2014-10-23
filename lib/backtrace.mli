@@ -11,4 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *)
-val get_backtrace : unit -> string
+
+val is_important: exn -> unit
+(** Declare that the backtrace is important for debugging and should be preserved.
+    The default is to throw away backtraces for speed. *)
+
+val get: exn -> string list
+(** Get a copy of the backtrace associated with [exn] *)
+
+val remove: exn -> string list
+(** Get a backtrace associated with [exn] and remove it from the tables *)
