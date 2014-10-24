@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *)
+open Sexplib.Std
 
 let my_name = ref (Filename.basename Sys.argv.(0))
 let set_my_name x = my_name := x
@@ -31,10 +32,24 @@ let rec split_c c str =
     String.sub str 0 i :: (split_c c (String.sub str (i+1) (String.length str - i - 1)))
   with Not_found -> [str]
     
-type backtrace = string list (* < OCaml 4.02.0 *)
+type t = string list (* < OCaml 4.02.0 *)
+  with sexp
 
-type t = {
-  backtraces: backtrace array;
+let empty = []
+
+let to_string_hum xs =
+  let xs' = List.length xs in
+  let results = Buffer.create 10 in
+  let rec loop i = function
+  | [] -> Buffer.contents results
+  | x :: xs ->
+    Buffer.add_string results (Printf.sprintf "%d/%d %s" i xs' x);
+    Buffer.add_string results "\n";
+    loop (i + 1) xs in
+  loop 0 xs
+
+type table = {
+  backtraces: t array;
   exn_to_backtrace: exn Weak.t;
   mutable producer: int; (* free running counter *)
   m: Mutex.t;
@@ -57,7 +72,7 @@ let make () =
   let m = Mutex.create () in
   { backtraces; exn_to_backtrace; producer; m }
 
-let associate t exn bt =
+let add t exn bt =
   Mutex.execute t.m
     (fun () ->
       let slot = t.producer mod max_backtraces in
@@ -66,11 +81,11 @@ let associate t exn bt =
       t.backtraces.(slot) <- bt;
     )
 
-let add_backtrace t exn =
+let is_important t exn =
   let bt = get_backtrace_401 () in
   (* Deliberately clear the backtrace buffer *)
   (try raise Not_found with Not_found -> ());
-  associate t exn bt
+  add t exn bt
 
 (* fold over the slots matching exn *)
 let fold t exn f initial =
@@ -86,10 +101,10 @@ let fold t exn f initial =
         loop acc (from - 1) in
   loop initial (t.producer - 1)
 
-let find_all t exn =
+let get t exn =
   fold t exn (fun acc slot -> t.backtraces.(slot) :: acc) [] |> List.concat
 
-let remove_all t exn =
+let remove t exn =
   fold t exn (fun acc slot ->
       let bt = t.backtraces.(slot) in
       Weak.set t.exn_to_backtrace slot None;
@@ -100,13 +115,13 @@ let remove_all t exn =
 
 let global_backtraces = make ()
 
-let is_important = add_backtrace global_backtraces
+let is_important = is_important global_backtraces
 
-let add = associate global_backtraces
+let add = add global_backtraces
 
-let remove = remove_all global_backtraces
+let remove = remove global_backtraces
 
-let get = find_all global_backtraces
+let get = get global_backtraces
 
 let reraise old newexn =
   add newexn (remove old);
