@@ -12,6 +12,11 @@
  * GNU Lesser General Public License for more details.
  *)
 
+val set_my_name: string -> unit
+(** Every backtrace line will include a name for this process. By default it
+    will be the executable name, but it could also include the process ID
+    and host. *)
+
 val is_important: exn -> unit
 (** Declare that the backtrace is important for debugging and should be preserved.
     The default is to throw away backtraces for speed. *)

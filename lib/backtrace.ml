@@ -12,6 +12,9 @@
  * GNU Lesser General Public License for more details.
  *)
 
+let my_name = ref (Filename.basename Sys.argv.(0))
+let set_my_name x = my_name := x
+
 module Mutex = struct
   include Mutex
   (** execute the function f with the mutex hold *)
@@ -45,6 +48,7 @@ let get_backtrace_401 () =
   Printexc.get_backtrace ()
   |> split_c '\n'
   |> List.filter (fun x -> x <> "")
+  |> List.map (fun x -> !my_name ^ " " ^ x)
 
 let make () =
   let backtraces = Array.make max_backtraces [] in
