@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 6dd0b885d7fc0cce3d2d1c5440fa53eb)
+# DO NOT EDIT (digest: 0b1ac2bd701986ac4e927661d05dbd2f)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -24,6 +24,7 @@ true: annot, bin_annot
 <lib/*.ml{,i,y}>: pkg_threads
 <lib/*.ml{,i,y}>: pkg_unix
 <lib/*.ml{,i,y}>: pkg_uuidm
+<lib/*.ml{,i,y}>: pkg_xapi-backtrace
 "lib/blkgetsize_stubs.c": pkg_bigarray
 "lib/blkgetsize_stubs.c": pkg_fd-send-recv
 "lib/blkgetsize_stubs.c": pkg_sexplib
@@ -31,6 +32,7 @@ true: annot, bin_annot
 "lib/blkgetsize_stubs.c": pkg_threads
 "lib/blkgetsize_stubs.c": pkg_unix
 "lib/blkgetsize_stubs.c": pkg_uuidm
+"lib/blkgetsize_stubs.c": pkg_xapi-backtrace
 "lib/unixext_open_stubs.c": pkg_bigarray
 "lib/unixext_open_stubs.c": pkg_fd-send-recv
 "lib/unixext_open_stubs.c": pkg_sexplib
@@ -38,6 +40,7 @@ true: annot, bin_annot
 "lib/unixext_open_stubs.c": pkg_threads
 "lib/unixext_open_stubs.c": pkg_unix
 "lib/unixext_open_stubs.c": pkg_uuidm
+"lib/unixext_open_stubs.c": pkg_xapi-backtrace
 "lib/unixext_stubs.c": pkg_bigarray
 "lib/unixext_stubs.c": pkg_fd-send-recv
 "lib/unixext_stubs.c": pkg_sexplib
@@ -45,6 +48,7 @@ true: annot, bin_annot
 "lib/unixext_stubs.c": pkg_threads
 "lib/unixext_stubs.c": pkg_unix
 "lib/unixext_stubs.c": pkg_uuidm
+"lib/unixext_stubs.c": pkg_xapi-backtrace
 "lib/unixext_write_stubs.c": pkg_bigarray
 "lib/unixext_write_stubs.c": pkg_fd-send-recv
 "lib/unixext_write_stubs.c": pkg_sexplib
@@ -52,6 +56,7 @@ true: annot, bin_annot
 "lib/unixext_write_stubs.c": pkg_threads
 "lib/unixext_write_stubs.c": pkg_unix
 "lib/unixext_write_stubs.c": pkg_uuidm
+"lib/unixext_write_stubs.c": pkg_xapi-backtrace
 "lib/zerocheck_stub.c": pkg_bigarray
 "lib/zerocheck_stub.c": pkg_fd-send-recv
 "lib/zerocheck_stub.c": pkg_sexplib
@@ -59,4 +64,5 @@ true: annot, bin_annot
 "lib/zerocheck_stub.c": pkg_threads
 "lib/zerocheck_stub.c": pkg_unix
 "lib/zerocheck_stub.c": pkg_uuidm
+"lib/zerocheck_stub.c": pkg_xapi-backtrace
 # OASIS_STOP
